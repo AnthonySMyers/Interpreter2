@@ -9,7 +9,7 @@ public class Parser {
 	private A6_GrammarRules rules = new A6_GrammarRules();
 	private Node root;
 	private boolean isNotComment = true, errorFlag = false, ntCheck = true;
-	private int treeSize = 0, parensCounter = 0, recursiveCount = 0, quoteCount = 0;
+	public int treeSize = 0, parensCounter = 0, recursiveCount = 0, quoteCount = 0;
 	
 	public Parser(){
 		stack.add(nodes.eof);
