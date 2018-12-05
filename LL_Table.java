@@ -269,6 +269,7 @@ public class LL_Table {
 		RuleNumbers[75][32] = 105;
 		RuleNumbers[76][31] = 106;
 		RuleNumbers[77][32] = 107;
+		RuleNumbers[78][5] = 113;
 		RuleNumbers[78][9] = 113;
 		RuleNumbers[78][10] = 113;
 		RuleNumbers[78][11] = 113;
@@ -280,10 +281,12 @@ public class LL_Table {
 		RuleNumbers[79][12] = 113;
 		RuleNumbers[79][15] = 110;
 		RuleNumbers[79][35] = 111;
+		RuleNumbers[79][36] = 112;
 		RuleNumbers[80][3] = 113;
 		RuleNumbers[80][6] = 113;
 		RuleNumbers[80][7] = 113;
 		RuleNumbers[80][15] = 116;
+		RuleNumbers[80][16] = 113;
 		RuleNumbers[80][33] = 115;
 		RuleNumbers[80][34] = 115;
 		RuleNumbers[80][35] = 116;
