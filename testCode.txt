@@ -1,0 +1,6 @@
+prog main {
+	a = input ( int ) ;
+	b = input ( int ) ;
+	c = a * a + b * b ;
+	print ( c );
+} $
