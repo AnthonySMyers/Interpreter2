@@ -1,5 +1,7 @@
 prog main {
+	print (" Number 1: ");
 	a = input ( int ) ;
+	print (" Number 2: ");
 	b = input ( int ) ;
 	c = a * a + b * b ;
 	print ( c );
