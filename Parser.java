@@ -6,7 +6,7 @@ public class Parser {
 	private LinkedList<Node> stack = new LinkedList<Node>();
 	private LinkedList<Integer> indexNT = new LinkedList<Integer>();
 	private LL_Table table = new LL_Table();
-	private AllNodes nodes = new AllNodes();
+	public AllNodes nodes = new AllNodes();
 	private A6_GrammarRules rules = new A6_GrammarRules();
 	private Node root, ast;
 	private boolean isNotComment = true, errorFlag = false, ntCheck = true;
@@ -75,19 +75,14 @@ public class Parser {
 					stack.removeLast();
 					pushReverse(cell);
 					if(root.currentChild < root.totalChildren){
-						if(root.getChildren().get(root.currentChild) != null && !root.getChildren().get(root.currentChild).getType().equals(Type.TERMINAL)){
-							root.currentChild++;
-							root = root.getChildren().get(root.currentChild-1);
-						}
-						if(root.getMom() != null){
-							root.height = root.getMom().height + 1;
+						if(!root.getChildren().isEmpty()){ 
+							root = root.getChildren().get(root.currentChild);
 						}
 					}
 					addChildren(cell, root);
-				}
-				if(root.getMom() != null && root.currentChild >= root.totalChildren){
-					while(root.getMom() != null && root.currentChild >= root.totalChildren){
+					while(root.currentChild >= root.totalChildren){
 						root = root.getMom();
+						root.currentChild++;
 					}
 				}
 			}
@@ -208,6 +203,12 @@ public class Parser {
 				momNode.totalChildren++;
 			}
 		}
+		/*else{
+			root = momNode.getMom();
+			root.getChildren().remove(root.currentChild-1);
+			root.currentChild--;
+			root.totalChildren--;
+		}*/
 	}
 	
 	public void PSTtoAST(Node curNode, Node ast){
