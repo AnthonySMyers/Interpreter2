@@ -1,8 +1,8 @@
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ScopeTreeNode {
-	private LinkedList<Map<String, Double>> symTab = new LinkedList<Map<String, Double>>();
+	private Map<String, Double> symTab = new HashMap<String, Double>();
 	private ScopeTreeNode child, mom;
 	
 	public ScopeTreeNode(){
@@ -10,7 +10,7 @@ public class ScopeTreeNode {
 		mom = null;
 	}
 	
-	public LinkedList<Map<String, Double>> getSymTab(){
+	public Map<String, Double> getSymTab(){
 		return symTab;
 	}
 	
