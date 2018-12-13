@@ -262,4 +262,8 @@ public class Parser {
 	public Node getRoot(){
 		return root;
 	}
+	
+	public boolean getErrorFlag(){
+		return errorFlag;
+	}
 }
