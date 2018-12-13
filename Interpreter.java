@@ -195,29 +195,29 @@ public class Interpreter {
 			if(!group.isEmpty()){
 				for(OpPair g : group){
 					for(OpPair e : exp){
-						if(g.index1 <= e.index1 && g.index2 >= e.index2){
+						if(g.index1 <= e.index1 && g.index2 >= e.index2 && !listChange){
 							handleExponents(e);
+							g.index2--;
 							if(listChange){
-								g.index2--;
 								break;
 							}
 						}
 					}
 					for(OpPair md : mulDiv){
-						if(g.index1 <= md.index1 && g.index2 >= md.index2){
+						if(g.index1 <= md.index1 && g.index2 >= md.index2 && !listChange){
 							handleMulDiv(md);
+							g.index2--;
 							if(listChange){
-								g.index2--;
 								break;
 							}
 						}
 					}
 					for(OpPair as : addSub){
-						if(g.index1 <= as.index1 && g.index2 >= as.index2){
+						if(g.index1 <= as.index1 && g.index2 >= as.index2 && !listChange){
 							//System.out.println(expVals.get(as.index1)+" "+as.operation+" "+expVals.get(as.index2));
 							handleAddSub(as);
+							g.index2--;
 							if(listChange){
-								g.index2--;
 								break;
 							}
 						}
@@ -228,22 +228,31 @@ public class Interpreter {
 				}
 			}
 			else{
-				for(OpPair e : exp){
-					handleExponents(e);
-					if(listChange){
-						break;
+				if(!listChange){
+					for(OpPair e : exp){
+						//System.out.println(expVals.get(e.index1)+" "+e.operation+" "+expVals.get(e.index2));
+						if(!listChange){
+							handleExponents(e);
+							if(listChange){
+								break;
+							}
+						}
 					}
-				}
-				for(OpPair md : mulDiv){
-					handleMulDiv(md);
-					if(listChange){
-						break;
+					for(OpPair md : mulDiv){
+						if(!listChange){
+							handleMulDiv(md);
+							if(listChange){
+								break;
+							}
+						}
 					}
-				}
-				for(OpPair as : addSub){
-					handleAddSub(as);
-					if(listChange){
-						break;
+					for(OpPair as : addSub){
+						if(!listChange){
+							handleAddSub(as);
+							if(listChange){
+								break;
+							}
+						}
 					}
 				}
 			}
