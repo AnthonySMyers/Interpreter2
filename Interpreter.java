@@ -1,14 +1,12 @@
 import java.io.File;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Scanner;
 
 public class Interpreter {
 	private Parser llp;
 	private int scopeNumber = 0, curVal, opCount = 0, quoteCount = 0;
 	private ScopeTreeNode rootSCT = new ScopeTreeNode();
-	private boolean errorCheck = false, insideParens = false, firstParens = false, alreadyInput = false, listChange = false, isAssignment = false, isPrint = false, isInput = false, errorFlag = false, isNotComment = true;
+	private boolean insidePrint = false, listChange = false, isAssignment = false, isPrint = false, isInput = false, errorFlag = false, isNotComment = true;
 	private String curVar;
 	private LinkedList<OpPair> addSub = new LinkedList<OpPair>() 
 								, mulDiv = new LinkedList<OpPair>()
@@ -24,6 +22,7 @@ public class Interpreter {
 		//llp.resetAST();
 		//llp.resetRoot();
 		//llp.printPST(llp.getRoot());
+		errorFlag = llp.getErrorFlag();
 		RunProgram(parseFile);
 	}
 	
@@ -102,6 +101,7 @@ public class Interpreter {
 	}*/
 	
 	public void handleExponents(OpPair e){
+		//System.out.println(expVals.get(e.index1)+"^"+expVals.get(e.index2));
 		expVals.set(e.index1, Math.pow(expVals.get(e.index1), expVals.get(e.index2)));
 		expVals.remove(e.index2);
 		for(OpPair md : mulDiv){
@@ -200,6 +200,7 @@ public class Interpreter {
 								break;
 							}
 							handleExponents(e);
+							g.index2--;
 						}
 					}
 					for(OpPair md : mulDiv){
@@ -208,6 +209,7 @@ public class Interpreter {
 								break;
 							}
 							handleMulDiv(md);
+							g.index2--;
 						}
 					}
 					for(OpPair as : addSub){
@@ -216,10 +218,13 @@ public class Interpreter {
 								break;
 							}
 							handleAddSub(as);
+							g.index2--;
 						}
 					}
-					group.remove(g);
-				}			
+					if((g.index2-g.index1) == 0){
+						group.remove(g);
+					}
+				}
 			}
 			else{
 				for(OpPair e : exp){
@@ -265,6 +270,46 @@ public class Interpreter {
 		}
 	}
 	
+	public void StoreExpression(String currentStr){
+		if(FloatCheck(currentStr)){
+			expVals.add(Double.parseDouble(currentStr));
+		}
+		if(rootSCT.getSymTab().containsKey(currentStr)){
+				expVals.add(rootSCT.getSymTab().get(currentStr));
+		}
+		if(currentStr.equals("(")){
+			if(expVals.isEmpty()){
+				OpPair newOp = new OpPair(0, -1, null);
+				group.add(newOp);
+			}
+			else{
+				OpPair newOp = new OpPair(expVals.size(), 0, null);
+				group.add(newOp);
+			}
+		}
+		if(currentStr.equals("+") || currentStr.equals("-")){
+			OpPair newOp = new OpPair(expVals.size()-1, expVals.size(), currentStr);
+			addSub.add(newOp);
+			opCount++;
+		}
+		if(currentStr.equals("*") || currentStr.equals("/")){
+			OpPair newOp = new OpPair(expVals.size()-1, expVals.size(), currentStr);
+			mulDiv.add(newOp);
+			opCount++;
+		}
+		if(currentStr.equals("^")){
+			OpPair newOp = new OpPair(expVals.size()-1, expVals.size(), currentStr);
+			exp.add(newOp);
+			opCount++;
+		}
+		if(currentStr.equals(")") && !group.isEmpty() && group.getLast().index2 == -1){
+			group.getLast().index2 = expVals.size()-1;
+			/*for(OpPair y : group){
+				System.out.println("index1: "+y.index1+" index2: "+y.index2);
+			}*/
+		}
+	}
+	
 	public void RunProgram(File fileName) throws Exception{
 		Scanner scLines = new Scanner(fileName);						//Scanner to read string values line by line
 		String currentStr, collectStr = "", printStr = "";								//String used to reference the most recently scanned string from source code text
@@ -279,154 +324,70 @@ public class Interpreter {
 				}
 				if(!currentStr.equals("//") && isNotComment){
 					if(quoteCount % 2 == 0){
-						if(collectStr.equals("")){
-							if(!llp.nodes.terminals.containsKey(currentStr) && !isAssignment){
-								Map<String, Double> newVar = new HashMap<String, Double>();
-								newVar.put(currentStr, 0.0);
-								curVar = currentStr;
-								rootSCT.getSymTab().add(newVar);
-							}
-							if(currentStr.equals("input")){
-								isInput = true;
-								isAssignment = false;
-							}
-							if(isAssignment){
-								if(FloatCheck(currentStr)){
-									expVals.add(Double.parseDouble(currentStr));
-								}
-								for(Map<String, Double> var : rootSCT.getSymTab()){
-									if(var.containsKey(currentStr)){
-										expVals.add(var.get(currentStr));
-									}
-								}
-								if(currentStr.equals("(")){
-									if(expVals.isEmpty()){
-										OpPair newOp = new OpPair(0, 0, null);
-										group.add(newOp);
-									}
-									else{
-										OpPair newOp = new OpPair(expVals.size(), 0, null);
-										group.add(newOp);
-									}
-								}
-								if(currentStr.equals("+") || currentStr.equals("-")){
-									OpPair newOp = new OpPair(expVals.size()-1, expVals.size(), currentStr);
-									addSub.add(newOp);
-									opCount++;
-								}
-								if(currentStr.equals("*") || currentStr.equals("/")){
-									OpPair newOp = new OpPair(expVals.size()-1, expVals.size(), currentStr);
-									mulDiv.add(newOp);
-									opCount++;
-								}
-								if(currentStr.equals("^")){
-									OpPair newOp = new OpPair(expVals.size()-1, expVals.size(), currentStr);
-									exp.add(newOp);
-									opCount++;
-								}
-								if(currentStr.equals(")")){
-									group.getLast().index2 = expVals.size()-1;
-								}
-							}
-							if(isPrint && firstParens){
-								if(FloatCheck(currentStr)){
-									expVals.add(Double.parseDouble(currentStr));
-								}
-								for(Map<String, Double> var : rootSCT.getSymTab()){
-									if(var.containsKey(currentStr)){
-										expVals.add(var.get(currentStr));
-									}
-								}
-								if(currentStr.equals("(")){
-									if(expVals.isEmpty()){
-										OpPair newOp = new OpPair(0, 0, null);
-										group.add(newOp);
-										insideParens = true;
-									}
-									else{
-										OpPair newOp = new OpPair(expVals.size(), 0, null);
-										group.add(newOp);
-										insideParens = true;
-									}
-								}
-								if(currentStr.equals("+") || currentStr.equals("-")){
-									System.out.println("add check");
-									OpPair newOp = new OpPair(expVals.size()-1, expVals.size(), currentStr);
-									addSub.add(newOp);
-									opCount++;
-								}
-								if(currentStr.equals("*") || currentStr.equals("/")){
-									System.out.println("mul check");
-									OpPair newOp = new OpPair(expVals.size()-1, expVals.size(), currentStr);
-									mulDiv.add(newOp);
-									opCount++;
-								}
-								if(currentStr.equals("^")){
-									OpPair newOp = new OpPair(expVals.size()-1, expVals.size(), currentStr);
-									exp.add(newOp);
-									opCount++;
-								}
-								if(currentStr.equals(")") && insideParens){
-									System.out.println("group check");
-									group.getLast().index2 = expVals.size()-1;
-									insideParens = false;
-								}
-								if((currentStr.equals(",")||currentStr.equals(";")) && !expVals.isEmpty()){
-									performOperations();
-									//System.out.println(expVals.getLast());
-								    printStr += expVals.getLast();
-									expVals.clear();
-								}
-							}
-							if(isPrint && currentStr.equals("(") && !firstParens){
-								firstParens = true;
-							}
-							if(isInput && (currentStr.equals("int")||currentStr.equals("float"))){
-								inputStatement(currentStr);
-								isInput = false;
-								alreadyInput = true;
-							}
-							if(currentStr.equals("=")){
-								isAssignment = true;
-							}
-							if(currentStr.equals("print")){
-								isPrint = true;
-							}
-							if(currentStr.equals(";")){
-								if(isAssignment || alreadyInput){
-									performOperations();
-									for(Map<String, Double> var : rootSCT.getSymTab()){
-										if(var.containsKey(curVar)){
-											var.replace(curVar, expVals.getLast());
-											//System.out.println(expVals.getLast());
-											if(firstParens){
-												expVals.clear();
-											}
-											//System.out.println(curVar+" = "+var.get(curVar));
-										}
-									}
-								}
-								if(isPrint){
-									printStr = printStr.replaceAll("\"", "");
-									System.out.println(printStr);
-									printStr = "";
-								}
-								isAssignment = false;
-								firstParens = false;
-								isPrint = false;
-								isInput = false;
-								alreadyInput = false;
-							}
-							
+						if(!llp.nodes.terminals.containsKey(currentStr) && !isAssignment && !insidePrint){
+							curVar = currentStr;
+							rootSCT.getSymTab().put(currentStr, 0.0);
 						}
-						else{
-							collectStr += " "+currentStr;
-							printStr += " "+collectStr;
-							collectStr = "";
+						if(currentStr.equals("input")){
+							isInput = true;
+							isAssignment = false;
+						}
+						if(isInput && (currentStr.equals("int") || currentStr.equals("float"))){
+							inputStatement(currentStr);
+						}
+						if(isAssignment){
+							StoreExpression(currentStr);
+						}
+						if(insidePrint){
+							StoreExpression(currentStr);
+						}
+						if(insidePrint && (currentStr.equals(",")||currentStr.equals(";")) && !expVals.isEmpty()){
+							/*for(Double x : expVals)
+								System.out.print(x+" ");
+							*/performOperations();
+							if(expVals.getLast() == Math.ceil(expVals.getLast())){
+								String intValue = ""+expVals.getLast();
+								intValue = intValue.substring(0, intValue.length() - 2);
+								System.out.print(" "+intValue);
+							}
+							else{
+								System.out.print(" "+expVals.getLast());
+							}
+							expVals.clear();
+						}
+						if(isPrint && currentStr.equals("(")){						
+							insidePrint = true;
+							isPrint = false;
+						}
+						if(currentStr.equals("=")){
+							isAssignment = true;
+						}
+						if(currentStr.equals("print")){
+							isPrint = true;
+						}
+						if(currentStr.equals(";")){
+							if(isAssignment || isInput){
+								performOperations();
+								if(rootSCT.getSymTab().containsKey(curVar)){
+									rootSCT.getSymTab().replace(curVar, expVals.getLast());
+									expVals.clear();
+								    //System.out.println(curVar+" = "+rootSCT.getSymTab().get(curVar));
+									curVar = null;
+								}
+							}
+							isAssignment = false;
+							isPrint = false;
+							isInput = false;
+							if(insidePrint){
+								System.out.println();
+							}
+							insidePrint = false;
 						}
 					}
 					else{
-						collectStr += " "+currentStr;
+						if(insidePrint && !currentStr.equals("\"")){
+							System.out.print(" "+currentStr);
+						}
 					}
 				}
 				else{
