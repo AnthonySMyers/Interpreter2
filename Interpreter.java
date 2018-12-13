@@ -196,54 +196,55 @@ public class Interpreter {
 				for(OpPair g : group){
 					for(OpPair e : exp){
 						if(g.index1 <= e.index1 && g.index2 >= e.index2){
+							handleExponents(e);
 							if(listChange){
+								g.index2--;
 								break;
 							}
-							handleExponents(e);
-							g.index2--;
 						}
 					}
 					for(OpPair md : mulDiv){
 						if(g.index1 <= md.index1 && g.index2 >= md.index2){
+							handleMulDiv(md);
 							if(listChange){
+								g.index2--;
 								break;
 							}
-							handleMulDiv(md);
-							g.index2--;
 						}
 					}
 					for(OpPair as : addSub){
 						if(g.index1 <= as.index1 && g.index2 >= as.index2){
+							//System.out.println(expVals.get(as.index1)+" "+as.operation+" "+expVals.get(as.index2));
+							handleAddSub(as);
 							if(listChange){
+								g.index2--;
 								break;
 							}
-							handleAddSub(as);
-							g.index2--;
 						}
 					}
-					if((g.index2-g.index1) == 0){
+					if((g.index2-g.index1) < 1){
 						group.remove(g);
 					}
 				}
 			}
 			else{
 				for(OpPair e : exp){
+					handleExponents(e);
 					if(listChange){
 						break;
 					}
-					handleExponents(e);
 				}
 				for(OpPair md : mulDiv){
+					handleMulDiv(md);
 					if(listChange){
 						break;
 					}
-					handleMulDiv(md);
 				}
 				for(OpPair as : addSub){
+					handleAddSub(as);
 					if(listChange){
 						break;
 					}
-					handleAddSub(as);
 				}
 			}
 		}
@@ -312,7 +313,7 @@ public class Interpreter {
 	
 	public void RunProgram(File fileName) throws Exception{
 		Scanner scLines = new Scanner(fileName);						//Scanner to read string values line by line
-		String currentStr, collectStr = "", printStr = "";								//String used to reference the most recently scanned string from source code text
+		String currentStr, collectStr = "", printStr = "";				//String used to reference the most recently scanned string from source code text
 		while(scLines.hasNextLine() && !errorFlag){
 			String lineRead = scLines.nextLine();
 			Scanner sc = new Scanner(lineRead);
