@@ -10,34 +10,28 @@ public class Interpreter {
 	private String curVar;
 	private LinkedList<OpPair> addSub = new LinkedList<OpPair>() 
 								, mulDiv = new LinkedList<OpPair>()
-								, exp = new LinkedList<OpPair>()
+								, exp = new LinkedList<OpPair>() //exponential operation for a number
 								, group = new LinkedList<OpPair>();
-	private LinkedList<Double> expVals = new LinkedList<Double>(); 
+	private LinkedList<Double> expVals = new LinkedList<Double>();
 	
+	/**
+	 * constructor with a given file object
+	 * @param parseFile - file object to read
+	 * @throws Exception
+	 */
 	public Interpreter(File parseFile) throws Exception{
 		llp = new Parser();
 		llp.readFile(parseFile);
 		llp.resetRoot();
-		//llp.PSTtoAST(llp.getRoot(), llp.getAST());
-		//llp.resetAST();
-		//llp.resetRoot();
-		//llp.printPST(llp.getRoot());
 		errorFlag = llp.getErrorFlag();
 		RunProgram(parseFile);
 	}
 	
-	public void interpretSemantics(){
-		
-	}
-	
-	public void buildSCT(){
-		
-	}
-	
-	public void runProgram(){
-		
-	}
-	
+	/**
+	 * checks if the string value is a number and converts the number to int/double
+	 * @param currentStr - current string value
+	 * @param lineCount - total number of lines already read
+	 */
 	public void NumberChecker(String currentStr, int lineCount){
 		if(!currentStr.contains(".")){
 			try{
@@ -53,6 +47,11 @@ public class Interpreter {
 		}
 	}
 	
+	/**
+	 * checks if string value is an integer
+	 * @param currentStr - current string value
+	 * @return true/false
+	 */
 	public boolean IntCheck(String currentStr){
 		try{
 			int intCheck = Integer.parseInt(currentStr);
@@ -61,6 +60,11 @@ public class Interpreter {
 		catch(NumberFormatException e){ return false; }
 	}
 	
+	/**
+	 * checks if string value is a float/decimal
+	 * @param currentStr - current string value
+	 * @return true/false
+	 */
 	public boolean FloatCheck(String currentStr){
 		try{
 			double doubleCheck = Double.parseDouble(currentStr);
@@ -69,39 +73,12 @@ public class Interpreter {
 		catch(NumberFormatException e){	return false;}
 	}
 	
-	/*public void TreeWalk(Node curNode){
-		BS: if(curNode == null){
-			return;
-		}
-		POP: if(curNode.getType().equals(Type.TERMINAL)){
-			
-		}
-		else if(curNode.getType().equals(Type.NONTERMINAL)){
-			if(curNode.getChildren().size() != 0){
-				
-			}
-			for(int i = 0; i < curNode.getChildren().size(); i++){
-
-				if(curNode.getChildren().get(i).getType().equals(Type.TERMINAL)){
-				}
-				else if(curNode.getChildren().get(i).getType().equals(Type.NONTERMINAL)){
-					if(curNode.getChildren().get(i).getChildren().size() != 0){
-					}
-				}
-			}
-			if(curNode.getChildren().size() != 0){
-			}
-		}
-		RECURSION: for(int i = 0; i < curNode.getChildren().size(); i++){
-			curNode.getChildren().get(i).height = curNode.height+1;
-			llp.parensCounter = curNode.height+1;
-			llp.recursiveCount++;
-			TreeWalk(curNode.getChildren().get(i));
-		}
-	}*/
 	
+	/**
+	 * executes the exponent operation (denoted by ^)
+	 * @param e - OpPair object with the operation ^
+	 */
 	public void handleExponents(OpPair e){
-		//System.out.println(expVals.get(e.index1)+"^"+expVals.get(e.index2));
 		expVals.set(e.index1, Math.pow(expVals.get(e.index1), expVals.get(e.index2)));
 		expVals.remove(e.index2);
 		for(OpPair md : mulDiv){
@@ -127,6 +104,10 @@ public class Interpreter {
 		listChange = true;
 	}
 	
+	/**
+	 * executes multiply/divide operation
+	 * @param md - OpPair object with operation value of * or /
+	 */
 	public void handleMulDiv(OpPair md){
 		if(md.operation.equals("*")){
 			expVals.set(md.index1, (expVals.get(md.index1)*expVals.get(md.index2)));
@@ -158,6 +139,10 @@ public class Interpreter {
 		listChange = true;
 	}
 	
+	/**
+	 * executes add/subtract operation
+	 * @param as - OpPair object with operation value of + or -
+	 */
 	public void handleAddSub(OpPair as){
 		if(as.operation.equals("+")){
 			expVals.set(as.index1, (expVals.get(as.index1)+expVals.get(as.index2)));
@@ -189,6 +174,9 @@ public class Interpreter {
 		listChange = true;
 	}
 	
+	/**
+	 * executes the math operations
+	 */
 	public void performOperations(){
 		while(opCount != 0){
 			listChange = false;
@@ -214,7 +202,6 @@ public class Interpreter {
 					}
 					for(OpPair as : addSub){
 						if(g.index1 <= as.index1 && g.index2 >= as.index2 && !listChange){
-							//System.out.println(expVals.get(as.index1)+" "+as.operation+" "+expVals.get(as.index2));
 							handleAddSub(as);
 							g.index2--;
 							if(listChange){
@@ -230,7 +217,6 @@ public class Interpreter {
 			else{
 				if(!listChange){
 					for(OpPair e : exp){
-						//System.out.println(expVals.get(e.index1)+" "+e.operation+" "+expVals.get(e.index2));
 						if(!listChange){
 							handleExponents(e);
 							if(listChange){
@@ -259,6 +245,10 @@ public class Interpreter {
 		}
 	}
 	
+	/**
+	 * execute input statement and validate input
+	 * @param type - string value as an integer or float
+	 */
 	public void inputStatement(String type){
 		Scanner sc = new Scanner(System.in);
 		String input = sc.nextLine();
@@ -280,6 +270,10 @@ public class Interpreter {
 		}
 	}
 	
+	/**
+	 * save operands and operation into a list
+	 * @param currentStr - current string value
+	 */
 	public void StoreExpression(String currentStr){
 		if(FloatCheck(currentStr)){
 			expVals.add(Double.parseDouble(currentStr));
@@ -314,12 +308,14 @@ public class Interpreter {
 		}
 		if(currentStr.equals(")") && !group.isEmpty() && group.getLast().index2 == -1){
 			group.getLast().index2 = expVals.size()-1;
-			/*for(OpPair y : group){
-				System.out.println("index1: "+y.index1+" index2: "+y.index2);
-			}*/
 		}
 	}
 	
+	/**
+	 * runs the program in the file
+	 * @param fileName - name of file containing the program
+	 * @throws Exception
+	 */
 	public void RunProgram(File fileName) throws Exception{
 		Scanner scLines = new Scanner(fileName);						//Scanner to read string values line by line
 		String currentStr, collectStr = "", printStr = "";				//String used to reference the most recently scanned string from source code text
@@ -351,16 +347,15 @@ public class Interpreter {
 						if(insidePrint){
 							StoreExpression(currentStr);
 						}
-						if(insidePrint && (currentStr.equals(",")||currentStr.equals(";")) && !expVals.isEmpty()){
-							/*for(Double x : expVals)
-								System.out.print(x+" ");
-							*/performOperations();
+						if(insidePrint && (currentStr.equals(",")||currentStr.equals(";")) && !expVals.isEmpty())
+						{
+							performOperations();
 							if(expVals.getLast() == Math.ceil(expVals.getLast())){
 								String intValue = ""+expVals.getLast();
 								intValue = intValue.substring(0, intValue.length() - 2);
 								System.out.print(" "+intValue);
 							}
-							else{
+							else {
 								System.out.print(" "+expVals.getLast());
 							}
 							expVals.clear();
@@ -381,7 +376,6 @@ public class Interpreter {
 								if(rootSCT.getSymTab().containsKey(curVar)){
 									rootSCT.getSymTab().replace(curVar, expVals.getLast());
 									expVals.clear();
-								    //System.out.println(curVar+" = "+rootSCT.getSymTab().get(curVar));
 									curVar = null;
 								}
 							}
