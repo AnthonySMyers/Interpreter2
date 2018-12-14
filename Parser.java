@@ -4,7 +4,7 @@ import java.util.Scanner;
 /**
  * parses through the file/program, builds PST and converts it to an AST
  * @author Anthony Myers
- * @author Minhkhoa Vu
+ * @author Minhkhoa Vu	minhkhoavu954@gmail.com
  * @author Juan Espinoza
  * @author Miguel Castorena
  */
