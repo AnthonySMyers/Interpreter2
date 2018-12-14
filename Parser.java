@@ -1,7 +1,13 @@
 import java.io.File;
 import java.util.LinkedList;
 import java.util.Scanner;
-
+/**
+ * parses through the file/program, builds PST and converts it to an AST
+ * @author Anthony Myers
+ * @author Minhkhoa Vu
+ * @author Juan Espinoza
+ * @author Miguel Castorena
+ */
 public class Parser {
 	private LinkedList<Node> stack = new LinkedList<Node>();
 	private LinkedList<Integer> indexNT = new LinkedList<Integer>();
@@ -12,6 +18,9 @@ public class Parser {
 	private boolean isNotComment = true, errorFlag = false, ntCheck = true;
 	public int treeSize = 0, parensCounter = 0, recursiveCount = 0, quoteCount = 0;
 	
+	/**
+	 * default constructor that sets up the PST mechanism method
+	 */
 	public Parser(){
 		stack.add(nodes.eof);
 		stack.add(nodes.Pgm);
@@ -20,6 +29,10 @@ public class Parser {
 		root.height = 0;
 	}
 	
+	/**
+	 * runs the LL Mechanism algorithm provided in class to create the PST
+	 * @param inputStream - current string value in the file/program
+	 */
 	public void PSTmech(String inputStream){
 		while(ntCheck){
 			if(stack.getLast().getType().equals(Type.TERMINAL)){
@@ -89,6 +102,11 @@ public class Parser {
 		}
 	}
 	
+	/**
+	 * reads the program in a specified file
+	 * @param fileName - name of file containing the program
+	 * @throws Exception
+	 */
 	public void readFile(File fileName)throws Exception{
 		Scanner scLines = new Scanner(fileName);						//Scanner to read string values line by line
 		String currentStr, collectStr = "";								//String used to reference the most recently scanned string from source code text
@@ -134,7 +152,10 @@ public class Parser {
 			System.out.println("ERROR");
 		}
 	}
-	
+	/**
+	 * displays the PST
+	 * @param curNode - root of PST
+	 */
 	public void printPST(Node curNode){
 		BS: if(curNode == null){
 			return;
@@ -185,7 +206,10 @@ public class Parser {
 			printPST(curNode.getChildren().get(i));
 		}
 	}
-	
+	/**
+	 * add the RHS of a rule in reverse order to the stack
+	 * @param ruleNumber - rule containing the RHS
+	 */
 	public void pushReverse(int ruleNumber){
 		if(rules.getRules().get(ruleNumber-1)[0] != null)
 		{
@@ -194,7 +218,11 @@ public class Parser {
 			}
 		}
 	}
-	
+	/**
+	 * add children nodes to a parent node based on a specified rule 
+	 * @param ruleNumber - specific rule
+	 * @param momNode - RHS of a rule for the parent node
+	 */
 	public void addChildren(int ruleNumber, Node momNode){
 		if(rules.getRules().get(ruleNumber-1)[0] != null){
 			for(int i = 0; i < rules.getRules().get(ruleNumber-1).length; i++){
@@ -203,14 +231,12 @@ public class Parser {
 				momNode.totalChildren++;
 			}
 		}
-		/*else{
-			root = momNode.getMom();
-			root.getChildren().remove(root.currentChild-1);
-			root.currentChild--;
-			root.totalChildren--;
-		}*/
 	}
-	
+	/**
+	 * converts the PST to an AST by tree walking the PST
+	 * @param curNode - root of PST
+	 * @param ast - root of AST 
+	 */
 	public void PSTtoAST(Node curNode, Node ast){
 		BS: if(curNode.getChildren().size() == 0){
 			return;
@@ -238,7 +264,9 @@ public class Parser {
 			}
 		}
 	}
-	
+	/**
+	 * reset root object back to the root of the PST
+	 */
 	public void resetRoot(){
 		if(root != null){
 			while(root.getMom() != null){
@@ -246,7 +274,9 @@ public class Parser {
 			}
 		}
 	}
-	
+	/**
+	 * reset root object back to the root of the AST
+	 */
 	public void resetAST(){
 		if(ast != null){
 			while(ast.getMom() != null){
@@ -254,15 +284,24 @@ public class Parser {
 			}
 		}
 	}
-	
+	/**
+	 * get root of AST structure
+	 * @return ast - root of AST
+	 */
 	public Node getAST(){
 		return ast;
 	}
-	
+	/**
+	 * get root of PST structure
+	 * @return root - root of PST
+	 */
 	public Node getRoot(){
 		return root;
 	}
-	
+	/**
+	 * determines if an error has been raised
+	 * @return errorFlag
+	 */
 	public boolean getErrorFlag(){
 		return errorFlag;
 	}
