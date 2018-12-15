@@ -8,6 +8,9 @@ public class Node {
 	private Node momNode;
 	public int currentChild = 0, totalChildren = 0, height;
 	
+	/**
+	* Constructors for the nodes
+	*/
 	public Node(Type nt, int ind, String name, String token){
 		type = nt;
 		index = ind;
