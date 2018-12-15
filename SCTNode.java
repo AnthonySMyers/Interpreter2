@@ -8,6 +8,9 @@ public class SCTNode {
 	public int currentChild = 0, totalChildren = 0, height;
 	public LinkedList<symbolTableEntry> symbolTable = new LinkedList<symbolTableEntry>();
 	
+	/**
+	* SCTNode Constructor
+	*/
 	public SCTNode() {
 		
 	}
@@ -30,8 +33,9 @@ public class SCTNode {
 	}
 	
 	
-	
-	
+	/**
+	* Method adds entry into the sym table
+	*/
 	public void addSymTabEntry(symbolTableEntry newEntry) {
 		symbolTable.add(newEntry);
 	}
