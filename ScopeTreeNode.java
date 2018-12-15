@@ -5,6 +5,9 @@ public class ScopeTreeNode {
 	private Map<String, Double> symTab = new HashMap<String, Double>();
 	private ScopeTreeNode child, mom;
 	
+	/**
+	* Constructor for emtpy scope tree node
+	*/
 	public ScopeTreeNode(){
 		child = null;
 		mom = null;
