@@ -34,6 +34,7 @@ public class Node {
 		collection.add(child);
 	}
 	
+	//Getter & setter methods
 	public Type getType(){
 		return type;
 	}
