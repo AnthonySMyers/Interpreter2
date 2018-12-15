@@ -1,9 +1,19 @@
 import java.util.LinkedList;
-
+/**
+ * holds the A6 Grammar rules provided in the previous project
+ * @author Minhkhoa Vu	minhkhoavu954@gmail.com
+ * @author Anthony Myers
+ * @author Juan Espinoza
+ * @author Miguel Castorena
+ */
 public class A6_GrammarRules {
 	private LinkedList<Node[]> rules = new LinkedList<Node[]>();
 	private AllNodes nodes = new AllNodes();
 	
+	/**
+	 * default constructor that instantiates all A6 Grammar rules
+	 * and adds each rule to a linked list
+	 */
 	public A6_GrammarRules(){
 		Node[] rule1 = new Node[4];
 		rule1[0] = nodes.kwdprog;
