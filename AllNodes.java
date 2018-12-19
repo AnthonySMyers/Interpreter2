@@ -1,6 +1,15 @@
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Creates nodes for the A6 Grammar rules provided in the previous project
+ * Nodes used in code parsing and interpretation
+ * @author Minhkhoa Vu	minhkhoavu954@gmail.com
+ * @author Anthony Myers
+ * @author Juan Espinoza
+ * @author Miguel Castorena
+ */
+
 public class AllNodes {
 			//Non-Terminals
 			Node Pgm = new Node(Type.NONTERMINAL, 0, "Pgm");
