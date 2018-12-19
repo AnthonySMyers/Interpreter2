@@ -1,8 +1,18 @@
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Class definition for ScopeTreeNode data type
+ * Used to create nodes interpretation. ScopeTreeNodes are created during a treewalk of the AST.
+ * Symbol tables for each scope tree node are built during treewalk
+ * @author Minhkhoa Vu	minhkhoavu954@gmail.com
+ * @author Anthony Myers
+ * @author Juan Espinoza
+ * @author Miguel Castorena
+ */
+
 public class ScopeTreeNode {
-	private Map<String, Double> symTab = new HashMap<String, Double>();
+	private Map<String, Double> symTab = new HashMap<String, Double>();		//Symbol Table that holds all symTab entries
 	private ScopeTreeNode child, mom;
 	
 	/**
