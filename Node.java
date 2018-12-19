@@ -1,5 +1,15 @@
 import java.util.LinkedList;
 
+/**
+ * Class definitions for Node data type
+ * Used to create nodes for the A6 Grammar rules 
+ * Nodes used in code parsing and interpretation
+ * @author Minhkhoa Vu	minhkhoavu954@gmail.com
+ * @author Anthony Myers
+ * @author Juan Espinoza
+ * @author Miguel Castorena
+ */
+
 public class Node {
 	private Type type;
 	private int index;
