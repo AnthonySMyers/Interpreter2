@@ -1,3 +1,12 @@
+/**
+ * holds the A6 Grammar rules table
+ * Spreadsheet can be viewed at: https://drive.google.com/open?id=1K1XC4W8tb5qH3JmAybmw6-Vcdhjuc8MJtaL2hp4I_dE
+ * @author Minhkhoa Vu	minhkhoavu954@gmail.com
+ * @author Anthony Myers
+ * @author Juan Espinoza
+ * @author Miguel Castorena
+ */
+
 public class LL_Table {
 	private int[][] RuleNumbers = new int[81][38];
 	
