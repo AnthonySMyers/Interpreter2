@@ -18,14 +18,18 @@ N/A
 Contents
 A6_GrammarRules.java
 AllNodes.java
+Interpreter.java
 LL_Table.java
+MainApplication.java
 Node.java
+OpPair.java
 Parser.java
-Type.java
-Iterpreter.java
-SCTNode.java
-symbolTableEntry.java
 README.txt
+ScopeTreeNode.java
+Type.java
+test1.txt
+test2.txt
+testCode.txt
 
 External Requirements
 1. Java must be installed.
@@ -35,7 +39,50 @@ Setup and Installation
 N/A
 
 Sample Invocation and Results
+Enter the path of the file: C:\Users\mcast\eclipse-workspace\interp\src\testCode.txt
+   Number 1:
+  2
+   Number 2:
+  3
+   13         //Final output
 
+testCode.txt Contents:
+  prog main {
+	print ( " Number 1: " ) ;
+	a = input ( int ) ;
+	print ( " Number 2: " ) ;
+	b = input ( int ) ;
+	c = a * a + b * b ;
+	print ( c ) ;
+  } $
+  
+Enter the path of the file: C:\Users\mcast\eclipse-workspace\interp\src\test1.txt
+  Input radius>
+  3.26
+  Circumf= 20.4728      //Final output
+ 
+test1.txt Contents:
+  prog main { // Find the circumference of a circle.
+  pi = 3.14 ;
+  print ( " Input radius> " ) ;
+  rx = input ( float ) ;
+  circum = 2 * pi * rx ;
+  print ( " Circumf= " , circum ) ;
+  } $
+  
+Enter the path of the file: C:\Users\mcast\eclipse-workspace\interp\src\test2.txt
+ Input legs>
+  3
+  4
+ Hypotenuse= 5          //Final output
+
+test2.txt Contents:
+  prog main { // Find the hypotenuse of a right triangle.
+    print ( " Input legs> " ) ;
+    a = input ( int ) ;
+    b = input ( int ) ;
+    print ( " Hypotenuse= " , ( a * a + b * b ) ^ 0.5 ) ;
+  } $
 
 Features
 This program takes A6 language code in .txt files and executes the code contained in the input file.
