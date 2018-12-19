@@ -1,6 +1,17 @@
 import java.io.File;
 import java.util.Scanner;
 
+/**
+ * Main application to run Interpreter
+ * Program prompts user to input location of file containing A6 language code
+ * and outputs the execution of the A6 language code into the console.
+ * Additional console input may be required depending on the code contained in the file passed.
+ * @author Minhkhoa Vu	minhkhoavu954@gmail.com
+ * @author Anthony Myers
+ * @author Juan Espinoza
+ * @author Miguel Castorena
+ */
+
 public class MainApplication {
 	public static void main(String args[]) throws Exception{
 		Scanner in = new Scanner(System.in);
