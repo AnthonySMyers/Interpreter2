@@ -1,0 +1,10 @@
+prog main { 
+	print ( " Input Total HW Grade (out of 20)> " ) ;
+	hx = input ( int ) ; 
+	print ( " Input Midterm Grade (out of 50)> " ) ;
+	mx = input ( int ) ; 
+	print ( " Input Final Grade (out of 30)> " ) ; 
+	rx = input ( int ) ;
+	total = hx + mx + rx ; 
+	print ( " Official Grade: " , total ) ;
+} $
